@@ -5,6 +5,10 @@ changing from println! to print! does not print separate lines, it is one contin
 
 fn main() {
     println!("My pseudonym is: reformed");
-    println!("Christ is King of all of creation");
+    println!("Christ is King of all of creation");    
     println!("I am learning to become a software engineer and my first language is Rust.");
-}
+    println!("My pseudonym is: reformed");
+    println!("Christ is King of all of creation");    
+    println!("I am learning to become a software engineer and my first language is Rust.");
+
+}  
