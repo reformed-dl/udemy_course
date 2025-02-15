@@ -1,3 +1,3 @@
 fn main() {
-    println!("This is the main shell for the udemy course");
+    println!("I am testing this to make sure that I know what I am doing");
 }
