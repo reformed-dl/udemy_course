@@ -1,17 +1,25 @@
-//Return Types, Explicit and Implicit
-fn main() {
-    let total = square(5);
-    println!("{}", total);
+//If, Else If, Else
+//If statements must evaluate to a boolean, each If statement is evaluated individually
+//Else If statements stop checking once a boolean has evaluated to true
+//Else captures any other value
+fn main () {
+    let number = 3;
+    if number > 4 {
+        println!("Number is greater than 4");
+    }
+    if number < 4 {
+        println!("Number is less than 4");
+    }
 
-    let result = cubed(4);
-    println!("{}", result);
+    let season = "potato";
+    if season == "summer" {
+        println!("The season of sun is here");
+    } else if season == "winter" {
+        println!("It is getting cold outside");
+    } else if season == "spring" {
+        println!("Flowers give me allergies");
+    } else {
+        println!("Who knows??!!");
+    }
 }
 
-fn square(number: i8) -> i8 {
-    //must declare the return type
-    return number * number; //explicit returns require the key word 'return' and the line is finished with a ;
-}
-fn cubed(number: u8) -> u8 {
-    //must declare the return type
-    number * number * number //implicit returns do not accept ; the very last line is what you want to return and be the output
-}
