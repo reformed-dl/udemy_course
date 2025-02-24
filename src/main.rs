@@ -49,4 +49,15 @@ fn main () {
         character if character % 2 != 0 => print!("{} is an odd number", character),
         _ => println!("Unknown"), //instead of using the last line with a wildcard, if we know that one of the other match arms will 100% match, can input _ => unreachable!(),
     }
+    //Traffic Light Match Statement
+    println!("{}", traffic_light("red"));
+}
+
+fn traffic_light (light: &str) -> &str {
+    match light {
+        "red" => "stop",
+        "green" => "go",
+        "yellow" => "yield",
+        _ => "unknown",
+    }
 }
