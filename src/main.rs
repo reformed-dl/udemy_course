@@ -1,63 +1,67 @@
-//Match Statements
+//Ownership, Copy, Move and String Concatenation
 fn main () {
-    let evaluation = true; //simple match statement, checking 'evaluation' value and then matching to the match arm
-    match evaluation {
-        true => {
-            println!("This evaluation is true");
-        }
-        false => {
-            println!("This evaluation is false");
-        }
-    }
+    let name: String = String::from("Tyson"); 
+    println!("{}", name);
+    let boxer = &name;//&references name, address to the same piece of data on the heap. Both name and boxer are valid
+    println!("{}", boxer);
+    println!("{}", name);
+    let fighter = name;//Ownership is MOVED from name to fighter. Name is no longer valid after this point, nor is boxer
+    println!("{}", fighter);    
+    //println!("{}", boxer);
+    //println!("{}", name);
 
-    let number = true;
-    let total = match number {
-        true => 20,
-        false => 40,
-    };
-    println!("{}", total); //The above is evaluating whether 'number' is true or false. It then assigns the value of true or false to the 'total' variable.
+    //slices of Strings
+    let s: String = String::from("Mighty Mouse");
+    let t = &s;
+    let v = &s[0..6];
+    let z = &s[7..];
+    println!("{}", s);
+    println!("{}", t);
+    println!("{}", v);
+    println!("{}", z);
 
-    //utlizing the previous else if season statement to compare
-    let season = "autumn";
-    if season == "summer" {
-        println!("School is Out!");
-    } else if season == "spring" {
-        print!("Birds are singing");
-    } else if season == "winter" {
-        println!("Brrr so cold");
-    } else {
-        println!("Lots of Rain");
-    }
+    //Concatenation on Strings
+    let mut family: String = String::new();
+    family.push_str("Father");
+    println!("{}", family);
+    let woman: String = String::from(", Mother");
+    family.push_str(&woman);
+    println!("{}", family);
+    let kids = " and Children";
+    family.push_str(kids);
+    println!("{}", family);
 
-    match season {
-        "summer" => println!("School is Out"),
-        "spring" => println!("Birds are singing"),
-        "winter" => println!("Brrr so cold"),
-        _ => println!("Who Knows!"), //the wildcard must go at the end, match statements function off the first match, if wildcard is placed first, nothing else is checked
-    }
+    //Copy Vs Move in fn parameters
+    let value = 21;
+    immutable(value);//let num = value; COPY is made. 
+    println!("{} value is still useable", value);
 
-    let number = 8;
-    match number {
-        2 | 4 | 6 | 8 => println!("{} is even", number), // single | checks each number separately
-        1 | 3 | 5 => println!("{} number is odd", number),
-        _ => println!("Unknown for now"),
-    }
+    let nation = String::from("United States");
+    dynamic(nation);//let country = nation; Ownership is moved.
+    //cannot use nation as it is no longer valid
 
-    let digit = 6;//using an if statement within a match statement. Defining 'character' to digit and then running the logic
-    match digit {
-        character if character % 2 == 0 => println!("{} is an even number", character),
-        character if character % 2 != 0 => print!("{} is an odd number", character),
-        _ => println!("Unknown"), //instead of using the last line with a wildcard, if we know that one of the other match arms will 100% match, can input _ => unreachable!(),
-    }
-    //Traffic Light Match Statement
-    println!("{}", traffic_light("red"));
+    let city = String::from("Washington DC");
+    dynamic_two(&city);//parameter asks for a ref to a String, no copy is made, city is still useable.
+    println!("{} is still useable", city);
+
+    let king = String::from("Christ");
+    dynamic_three(king.clone()); //using .clone() method makes a copy and king is still useable.
+    println!("{} is still useable", king);
+
 }
 
-fn traffic_light (light: &str) -> &str {
-    match light {
-        "red" => "stop",
-        "green" => "go",
-        "yellow" => "yield",
-        _ => "unknown",
-    }
+fn immutable (num: i32) {
+    println!("{} is an immutable data type", num);
+}
+
+fn dynamic (country: String) {
+    println!("{} is where I live", country);
+}
+
+fn dynamic_two (place: &String) {
+    println!("{} is the capital of the USA", place);
+}
+
+fn dynamic_three (lord: String) {
+    println!("{} is King of Creation", lord);
 }
