@@ -1,33 +1,38 @@
-//Practice with Ownership and String Concatenation
+//Practice with slices - string and array
 fn main () {
- let mut trip = start_trip();//blank string
- visit_philadelphia(&mut trip);//invoke visit_philadephia fn, pass in &mut trip to reference trip and edit the String, but not pass ownership to city parameter.
- trip.push_str(" and ");//concatenate to the end of the mutable String
- visit_new_york(&mut trip);
- trip.push_str(" and ");
- visit_boston(&mut trip);
- trip.push('.');//concatentate a char to the end of a string
- show_itinerary(&trip);//reference to the trip String passed in as an argument, ownership not transferred
- println!("{}", trip);//trip is still valid and usable
+    let s: String = String::from("Mighty Mouse");//Strings
+    let t = &s;//full reference of s, no ownership transferred
+    let v = &s[0..6];//reference of s. bytes 0 - 5 = "Mighty"
+    let z = &s[7..];//reference of s. bytes 7 - end = "Mouse"
+    println!("{}", s);
+    println!("{}", t);
+    println!("{}", v);
+    println!("{}", z);
+    
+    let mut cereals = [//Arrays
+    String::from("Cookie Crisp"),
+    String::from("Cinnamon Toash Crunch"),
+    String::from("Frosted Flakes"),
+    String::from("Cocoa Puffs"),
+    String::from("Captain Crunch"),
+];
+let first_two = &cereals[..2];
+println!("{:?}", first_two);
 
-}
+let mid_three = &cereals[1..4];
+println!("{:?}", mid_three);
 
-fn start_trip() -> String {
-    String::from("The Plan is ...")
-}
+let last_three = &mut cereals[2..];//changed to mut here so I could change out element below
+println!("{:?}", last_three);
 
-fn visit_philadelphia(city: &mut String) {
-    city.push_str("Philadephia");//fn concatenates text to the end of the String
-}
+last_three[2] = String::from("Lucky Charms");//targeting last element and switching out "Captain Crunch" for "Lucky Charms"
+println!("{:?}", cereals);//able to access original array and "Capatain Crunch" has been replaced with "Lucky Charms"
 
-fn visit_new_york(city: &mut String) {
-    city.push_str("New York");//fn concatenates text to the end of the String
-}
+let cookie = &cereals[0];
+let cookie = &cookie[..6];//variable shadowning, cookie became bytes 0-5 in "Cookie Crisp", "Cookie"
+println!("{:?}", cookie);
 
-fn visit_boston(city: &mut String) {
-    city.push_str("Boston");//fn concatenates text to the end of the String
-}
-
-fn show_itinerary(itinerary: &String) {
-    println!("{}", itinerary);//fn asks for a &String to reference the String and print out results.
+let cocoa_puffs = &cereals[3];//variable declaration, cocoa_puffs = "Cocoa Puffs"
+let puffs = &cocoa_puffs[6..];//reference of cocoa_puffs, puffs = 6th byte till the end = "Puffs"
+println!("{:?}", puffs);
 }
