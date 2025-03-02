@@ -1,38 +1,48 @@
-//Practice with slices - string and array
-fn main () {
-    let s: String = String::from("Mighty Mouse");//Strings
-    let t = &s;//full reference of s, no ownership transferred
-    let v = &s[0..6];//reference of s. bytes 0 - 5 = "Mighty"
-    let z = &s[7..];//reference of s. bytes 7 - end = "Mouse"
-    println!("{}", s);
-    println!("{}", t);
-    println!("{}", v);
-    println!("{}", z);
-    
-    let mut cereals = [//Arrays
-    String::from("Cookie Crisp"),
-    String::from("Cinnamon Toash Crunch"),
-    String::from("Frosted Flakes"),
-    String::from("Cocoa Puffs"),
-    String::from("Captain Crunch"),
-];
-let first_two = &cereals[..2];
-println!("{:?}", first_two);
+/* Structs Basics
+Structs are containers used to store related data
+3 types of Structs: 1. Named Field 2. Tuple-like 3. Unit-like
+Struct Fields are identified by their name and they have a corresponding value
+fields are the owners of their values, structs are the owner of the fields
+First defifne a blueprint of the struct and then an instance of the struct in the actual program*/
 
-let mid_three = &cereals[1..4];
-println!("{:?}", mid_three);
+fn main() {
+    struct CoffeDrink {//This is the Bluepring of the Struct we will instantiate in the program
+        name: String,//field names and the types of data that will correspond to each field
+        price: f32,
+        is_hot: bool,
+    }
 
-let last_three = &mut cereals[2..];//changed to mut here so I could change out element below
-println!("{:?}", last_three);
+    let americano = CoffeDrink {//This is creating an instance of the Struct
+        name: String::from("Americano"),
+        price: 5.99,
+        is_hot: true,
+    };//need an ';' here
+    //access a struct field by struct_name.field_name
+    println!("{}", americano.name);
+    println!("{}", americano.price);
+    println!("{}", americano.is_hot);
+    println!("This morning I picked up an {} for {}. It is {} that it was hot.", americano.name, americano.price, americano.is_hot);
 
-last_three[2] = String::from("Lucky Charms");//targeting last element and switching out "Captain Crunch" for "Lucky Charms"
-println!("{:?}", cereals);//able to access original array and "Capatain Crunch" has been replaced with "Lucky Charms"
+    //let favorite_drink = americano.name; //ownership is moved here, since name field is a String and stored on the heap, name is no longer viable and usble
+    //println!("{}", favorite_drink);
 
-let cookie = &cereals[0];
-let cookie = &cookie[..6];//variable shadowning, cookie became bytes 0-5 in "Cookie Crisp", "Cookie"
-println!("{:?}", cookie);
+    //Overwriting Struct Fields
+    struct ActionHero {//template is not mutable or immutable
+        name: String,
+        display_character: char,
+        starting_lives: u8,
+    }
 
-let cocoa_puffs = &cereals[3];//variable declaration, cocoa_puffs = "Cocoa Puffs"
-let puffs = &cocoa_puffs[6..];//reference of cocoa_puffs, puffs = 6th byte till the end = "Puffs"
-println!("{:?}", puffs);
+    let mut terminator = ActionHero {//the instance itself needs to be declared mutable, if mutable all fields are mutable. All or nothing
+        name: String::from("Terminator"),
+        display_character: '@',
+        starting_lives: 8,
+    };
+    println!("My fovrite video game is {}, the character on the map is shown as {} and you have {} starting lives.", terminator.name, terminator.display_character, terminator.starting_lives);
+
+    terminator.name = String::from("Arnold");//access the existing struct name and field. struct_name.field_name and set it to new value
+    terminator.display_character = '$';
+    terminator.starting_lives = 5;
+
+    println!("{}, {}, {}", terminator.name, terminator.display_character, terminator.starting_lives);
 }
