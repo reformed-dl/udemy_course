@@ -1,41 +1,32 @@
-//String values in Structs are still stored on the heap and you have to be careful for ownership issues.
-struct Coffee {
-    price: f32,
-    name: String,
-    is_hot: bool,
+//Methods on a Struct
+#[derive(Debug)]
+struct Events {
+    what: String,
+    when: u16,
+    who: bool,
+}
+
+        /*Parameter Types: 1st parameter must always be self.
+        4 Options: 
+        1) Immutable struct value, self parameter takes ownership (self or self: Self)
+        2) Mutable struct value, self parameter takes ownership and can modify (mut self or self: mut Self)
+        3) Immutable reference to a struct instance, no ownership (&self or self: &Self)
+        4) Mutable reference to a struct instance, no ownership but can modify (&mut self or self: &mut Self) */
+
+impl Events {
+    fn what_event(self: Self) {
+        println!("{}", self.what);
+        println!("The year that the wheels fell off? {}", self.when);
+        println!("Has it gotten worse? {}", self.who);
+    }
 }
 
 fn main() {
-    let coffee = make_coffee(String::from("Espresso"), 5.99, true);
-
-    let mocha = Coffee {
-        name: String::from("Mocha"),
-        ..coffee//this tells Rust to copy the values from the coffee variable
+    let event = Events {
+        what: String::from("The West turned fake and gay"),
+        when: 1971,
+        who: true,
     };
 
-    let coffee_two = Coffee {
-        ..coffee//thsi copies all of the values in the coffee instance of the struct, and since we have a String, will make coffee.name no longer usable
-    };
-
-    println!("{}", mocha.name);
-    println!("{}", coffee_two.name);
-    //println!("{}", coffee.name); can't use coffee here becuase the name value moved to coffee_two
-
-    //in order to continue to use the string value of an instance after copying the values, use clone()
-
-    let coffee_three = Coffee {
-        name: coffee_two.name.clone(),
-        ..coffee_two
-    };
-    println!("{}", mocha.name);
-    println!("{}", coffee_two.name);
-    println!("{}", coffee_three.name);   
-}
-
-fn make_coffee(name: String, price: f32, is_hot: bool) -> Coffee {
-    Coffee {
-        name,
-        price,
-        is_hot,
-    }
+    event.what_event();//the fn is called on the end of the variable. self parameter is automatically passed in. In this case, ownership is taken by the self parameter.
 }
