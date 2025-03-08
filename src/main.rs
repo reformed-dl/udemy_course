@@ -1,20 +1,27 @@
-//Enums with Associated Values
+//Enums with Structs as Variants
 #[derive(Debug)]
-enum PaymentMethodType {//can store one or more pieces of associated data with enum variants, define the types not the concrete values
-    CreditCard(String),//called tuple variants
-    DebitCard(String),
-    Bitcoin(String, String),
+struct Credentials {
+    username: String,
+    password: String,
+}
+
+#[derive(Debug)]
+enum PaymentMethodType {
+    CreditCard(String),
+    DebitCard{username: String, password: String},//can also place the struct directly on the variant like this (this makes it only available on this enum)
+    Bitcoin(Credentials),//Using the struct above as my associated value for this variant(advantage is that the struct can be used elsewhere)
     Cash,
 }
-fn main() { 
-    let visa = PaymentMethodType::CreditCard(String::from("4476-8723"));
-    let mastercard = PaymentMethodType::DebitCard(String::from("6879-2145"));
-    let bitcoin = PaymentMethodType::Bitcoin(String::from("Multi-Sig Custody"), String::from("Not Your Keys, Not Your Cheese"));
-    let fiat = PaymentMethodType::Cash;
+fn main() {   
+    let bitcoin_credentials = Credentials {
+        username: String::from("JoeBlow@gmail.com"),
+        password: String::from("password lul"),
+    };
 
-    println!("{:?}", visa);
-    println!("{:?}", mastercard);
+    let bitcoin = PaymentMethodType::Bitcoin(bitcoin_credentials);
+
     println!("{:?}", bitcoin);
-    println!("{:?}", fiat);
 
+    let debit_card = PaymentMethodType::DebitCard { username: String::from("JaneDoe@gmail.com"), password: String::from("password2") };
+    println!("{:?}", debit_card);
 }
