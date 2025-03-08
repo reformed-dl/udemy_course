@@ -1,27 +1,20 @@
-//Enums a type that represents a set of possible values. It is a set number of possible values. Possible values are referred to as Variants.
-//Enums are a specific type and can be used like any other type
+//Enums with Associated Values
 #[derive(Debug)]
-enum CardSuit {
-    Hearts,
-    Diamonds,
-    Spades,
-    Clubs,
-}
-
-struct Card {
-    rank: String,
-    suit: CardSuit,//using the enum as the field type
+enum PaymentMethodType {//can store one or more pieces of associated data with enum variants, define the types not the concrete values
+    CreditCard(String),//called tuple variants
+    DebitCard(String),
+    Bitcoin(String, String),
+    Cash,
 }
 fn main() { 
-    let first_card = CardSuit::Hearts;
-    let mut second_card = CardSuit::Spades;
-    second_card = CardSuit::Clubs; //can use variable shadowing, but type must remain the same, going from one enum variant to another
-    println!("{:?}", first_card);
-    println!("{:?}", second_card);
+    let visa = PaymentMethodType::CreditCard(String::from("4476-8723"));
+    let mastercard = PaymentMethodType::DebitCard(String::from("6879-2145"));
+    let bitcoin = PaymentMethodType::Bitcoin(String::from("Multi-Sig Custody"), String::from("Not Your Keys, Not Your Cheese"));
+    let fiat = PaymentMethodType::Cash;
 
-    let card_array = [CardSuit::Diamonds, CardSuit::Clubs];
-    let card_tuple = (CardSuit::Spades, CardSuit::Hearts);
+    println!("{:?}", visa);
+    println!("{:?}", mastercard);
+    println!("{:?}", bitcoin);
+    println!("{:?}", fiat);
 
-    println!("{:?}", card_array);
-    println!("{:?}", card_tuple);
 }
