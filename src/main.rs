@@ -1,41 +1,27 @@
-//Builder Pattern
+//Enums a type that represents a set of possible values. It is a set number of possible values. Possible values are referred to as Variants.
+//Enums are a specific type and can be used like any other type
 #[derive(Debug)]
-struct CarLot {
-    name: String,
-    price: u32,
-    miles: u32,
+enum CardSuit {
+    Hearts,
+    Diamonds,
+    Spades,
+    Clubs,
 }
 
-impl CarLot {
-    fn new(name: String, price: u32, miles: u32) -> Self {//Creates a new instance of the CarLot struct
-        Self {
-            name,
-            price,
-            miles,
-        }
-    }
-
-    fn new_car(&mut self, new_car: String) -> &mut Self {
-        self.name = new_car;//overwrites field_value with new value
-        self//returns the modifed value
-    }
-
-    fn new_price(&mut self, new_price: u32) -> &mut Self {
-        self.price = new_price;
-        self
-    }
-
-    fn new_miles(&mut self, new_miles: u32) -> &mut Self {
-        self.miles = new_miles;
-        self
-    }
+struct Card {
+    rank: String,
+    suit: CardSuit,//using the enum as the field type
 }
 fn main() { 
-    let mut car = CarLot::new(String::from("Ford F-250"), 35000, 10298);//set variable to new instance of the struct
-    println!("Car Details: {:#?}", car);
+    let first_card = CardSuit::Hearts;
+    let mut second_card = CardSuit::Spades;
+    second_card = CardSuit::Clubs; //can use variable shadowing, but type must remain the same, going from one enum variant to another
+    println!("{:?}", first_card);
+    println!("{:?}", second_card);
 
-    //builder pattern allows me to string together methods
-    //Only possible due to how the methods are designed in the impl block
-    car.new_car(String::from("Jeep CJ7")).new_price(25999).new_miles(89200);
-    println!("Car Details: {:#?}", car);
+    let card_array = [CardSuit::Diamonds, CardSuit::Clubs];
+    let card_tuple = (CardSuit::Spades, CardSuit::Hearts);
+
+    println!("{:?}", card_array);
+    println!("{:?}", card_tuple);
 }
