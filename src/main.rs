@@ -1,29 +1,27 @@
-//Enums and Match Statements (2)
+//Enums and Match Statements (3)
 #[derive(Debug)]
-
-enum OperatingSystem {
-    Windows,
-    MacOS,
-    Linux,
+enum LaundryCycles {
+    Cold,
+    Hot{temp: u32},//struct named field associated value
+    Delicate(String),//tuple like associated value
 }
 
-fn years_since_release(os: OperatingSystem) -> u32 {
-    match os {
-        OperatingSystem::Windows => {
-            println!("Quite an old operating system");//can add a block of code to print and still end with an implicit return
-            39//must have this as the final line becuase all match arms must return a u32 int value
+fn wash_laundry(temperature: LaundryCycles) {
+    match temperature {
+        LaundryCycles::Cold => {
+            println!("Washing my laundry with cold water");
         }
-        OperatingSystem::MacOS => 23,
-        OperatingSystem::Linux => 34,
+        LaundryCycles::Hot { temp } => {//here we are extracting our fields by name
+            println!("Washing my laundry with {} degree water", temp);
+        }
+        LaundryCycles::Delicate(fabric) => {//choose whatever name I want to represent the String, here we are extracting our values by order or position
+            println!("Washing my {} laundry on the delicate cylce", fabric);
+        }
     }
 }
-
 fn main () {
-    let my_computer = OperatingSystem::Linux;
-    let age = years_since_release(my_computer);
-    println!("My computer's operating system is {} years old", age);
-
-    let dads_computer = OperatingSystem::Windows;
-    let dads_age = years_since_release(dads_computer);//when invoking fn, runs match logic and matches on windows which forces the execution of the block, print macro and implicit int return.
-    println!("My dad's computer operating system is {} years old", dads_age);//implicit return of match arm is interpolated into the print line
+    wash_laundry(LaundryCycles::Cold);
+    wash_laundry(LaundryCycles::Hot { temp: 100 });//input the 100
+    wash_laundry(LaundryCycles::Delicate(String::from("Silk Underoos")));//input the String Value
 }
+    
