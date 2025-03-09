@@ -1,27 +1,24 @@
-//Enums with Structs as Variants
+//Nesting Enums in Enums
 #[derive(Debug)]
-struct Credentials {
-    username: String,
-    password: String,
+enum Meat {
+    Chicken,
+    Steak,
 }
 
 #[derive(Debug)]
-enum PaymentMethodType {
-    CreditCard(String),
-    DebitCard{username: String, password: String},//can also place the struct directly on the variant like this (this makes it only available on this enum)
-    Bitcoin(Credentials),//Using the struct above as my associated value for this variant(advantage is that the struct can be used elsewhere)
-    Cash,
+enum RestaurantItem {
+   Burrito(Meat),//using the enum above as the associated filed for this variant
+   Bowl(Meat),
+   VeganPlate,
 }
-fn main() {   
-    let bitcoin_credentials = Credentials {
-        username: String::from("JoeBlow@gmail.com"),
-        password: String::from("password lul"),
-    };
 
-    let bitcoin = PaymentMethodType::Bitcoin(bitcoin_credentials);
+fn main() {
+    let lunch = RestaurantItem::Burrito(Meat::Steak);
+    let dinner = RestaurantItem::Bowl(Meat::Chicken);
+    let abandoned_meal = RestaurantItem::VeganPlate;
+    println!("Lunch was: {:?}", lunch);
+    println!("Dinner was: {:?}", dinner);
+    println!("The meal nobody chose was: {:?}", abandoned_meal);
 
-    println!("{:?}", bitcoin);
-
-    let debit_card = PaymentMethodType::DebitCard { username: String::from("JaneDoe@gmail.com"), password: String::from("password2") };
-    println!("{:?}", debit_card);
-}
+}   
+   
