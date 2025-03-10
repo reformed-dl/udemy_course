@@ -1,58 +1,30 @@
-//Methods on Enums (2) Matches with different Operators
+//Methods on Enums (3) Exact Match
 #[derive(Debug)]
-enum OnlinOrderStatus {
-    Ordered,
-    Packed,
-    Shipped,
-    Delivered,
+enum Milk {
+    Lowfat(i32),
+    Whole,
 }
 
-impl OnlinOrderStatus {
-    fn check(&self) {
+impl Milk {
+    fn kind(&self) {
         match self {
-            OnlinOrderStatus::Ordered | OnlinOrderStatus::Packed => {// the | is an or operator
-                println!("Your order is being prepped for delivery");
+            Milk::Lowfat(2) => {//determine exact match i32 value
+                println!("2% Milk is my favorite");
             }
-            OnlinOrderStatus::Shipped => {
-                println!("Your Order has been shipped");
+            Milk::Lowfat(percent) => {//'percent' is whatever name I choose, this will satisfy match for all other i32 values
+                println!("{:?} Milk is not good", percent);
             }
-            _ => {
-                println!("Your order has been delivered");// the wildcard catches all other options
-            }
-        }
-    }
-}
-
-#[derive(Debug)]
-enum GameDevelopment {
-    BrainStorming,
-    Planning,
-    Development,
-    Distribution,
-}
-
-impl GameDevelopment {
-    fn status(&self) {
-        match self {
-            GameDevelopment::Distribution => {
-                println!("Game is Ready! Enjoy Nerds!");
-            }
-            other_status => {
-                println!("Please check back later, game is currently in {:?} phase.", other_status);//other_status will interpolate the enum variant
+            Milk::Whole => {
+                println!("Whole Milk has too much fat");
             }
         }
     }
 }
    
 fn main () {
-    OnlinOrderStatus::Ordered.check();
-    OnlinOrderStatus::Packed.check();
-    OnlinOrderStatus::Shipped.check();
-    OnlinOrderStatus::Delivered.check();
-    GameDevelopment::BrainStorming.status();
-    GameDevelopment::Planning.status();
-    GameDevelopment::Development.status();
-    GameDevelopment::Distribution.status();
+ Milk::Lowfat(1).kind();
+ Milk::Lowfat(2).kind();
+ Milk::Whole.kind();
 }
 
     
