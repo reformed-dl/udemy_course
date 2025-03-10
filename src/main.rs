@@ -1,36 +1,58 @@
-//Methods on Enums (1)
+//Methods on Enums (2) Matches with different Operators
 #[derive(Debug)]
-enum LaundryCycles {
-    Cold,
-    Hot{temp: u32},
-    Delicate(String),
+enum OnlinOrderStatus {
+    Ordered,
+    Packed,
+    Shipped,
+    Delivered,
 }
 
-impl LaundryCycles {
-    fn wash_laundry(&self) {
+impl OnlinOrderStatus {
+    fn check(&self) {
         match self {
-            LaundryCycles::Cold => {
-                println!("Washing my laundry with cold water");
+            OnlinOrderStatus::Ordered | OnlinOrderStatus::Packed => {// the | is an or operator
+                println!("Your order is being prepped for delivery");
             }
-            LaundryCycles::Hot { temp } => {
-                println!("Washing my laundry with {} degree water", temp);
+            OnlinOrderStatus::Shipped => {
+                println!("Your Order has been shipped");
             }
-            LaundryCycles::Delicate(fabric) => {
-                println!("Washing my {} laundry on the delicate cylce", fabric);
+            _ => {
+                println!("Your order has been delivered");// the wildcard catches all other options
             }
         }
     }
 }
 
-fn main () {
-   LaundryCycles::Cold.wash_laundry();
-   let hot_cycle = LaundryCycles::Hot { temp: 100 };
-   hot_cycle.wash_laundry();
-
-   let delicate_cycle = LaundryCycles::Delicate(String::from("Silk Underoos"));
-   delicate_cycle.wash_laundry();
-
-   LaundryCycles::Hot { temp: 100 }.wash_laundry();
-   LaundryCycles::Delicate(String::from("Silk Underoos")).wash_laundry();
+#[derive(Debug)]
+enum GameDevelopment {
+    BrainStorming,
+    Planning,
+    Development,
+    Distribution,
 }
+
+impl GameDevelopment {
+    fn status(&self) {
+        match self {
+            GameDevelopment::Distribution => {
+                println!("Game is Ready! Enjoy Nerds!");
+            }
+            other_status => {
+                println!("Please check back later, game is currently in {:?} phase.", other_status);//other_status will interpolate the enum variant
+            }
+        }
+    }
+}
+   
+fn main () {
+    OnlinOrderStatus::Ordered.check();
+    OnlinOrderStatus::Packed.check();
+    OnlinOrderStatus::Shipped.check();
+    OnlinOrderStatus::Delivered.check();
+    GameDevelopment::BrainStorming.status();
+    GameDevelopment::Planning.status();
+    GameDevelopment::Development.status();
+    GameDevelopment::Distribution.status();
+}
+
     
