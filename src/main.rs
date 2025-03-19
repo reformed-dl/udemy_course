@@ -1,36 +1,28 @@
- /*Match Statements with Option Enums
- Using the unwrap() and expect() methods are optimistic and assume that there is Some variant within our Option Enum and therefore able to extract corresponding
- associated data, but led to a runtime error if the variant was Option::None
- Using Match Statements allows us to deal with both Option::Some(T) and Option::None in a more elegant way as we are required to have match arms that cover all cases*/
+ /*Top-Level Option Variants
+ Rust Prelude: a collection of named constructs that are available automatically in every program. All the top level names availabe to us
+ Prelude includes the Option Enum and is available automatically
+ Option Enum is so common that we have a shorthand syntax we can use. Instead of Option::Some, we can write Some, instead of Option::None, we can write None*/
 
 fn main () {
-    let musical_instruments = [String::from("Guitar"), String::from("Drums"), String::from("Bass")];
+    let item_is_available  = is_item_in_stock();
 
-    let bass: Option<&String> = musical_instruments.get(2);//Option<&String> is the concrete type since we have a [String; 3] that we are using the get() on and results in a Option Enum
-
-    match bass {
-        Option::Some(instrument) => println!("Playing the {}", instrument),//This arm will match. I declare the name for the associated data value 'instrument'
-        Option::None => println!("Singing with my voice"),
+    match item_is_available {
+        Some(true) => println!("Yes, the item is in stock and available"),
+        Some(false) => println!("No, the item is not in stock"),
+        None => println!("We are unable to find the item you are looking for"),
     }
-
-    play(bass);
-    println!("{:?}", bass);//I can still use bass here because Rust implements the Copy Trait on Option Enums
-
-    let invalid_instrument: Option<&String> = musical_instruments.get(100);
-
-    match invalid_instrument {
-        Option::Some(instrument) => println!("Playing the {}", instrument),
-        Option::None => println!("Singing with my voice"),//This arm will match
-    }
-
-    play(invalid_instrument);
-    println!("{:?}", invalid_instrument);//I can still use invalid_instrument here as well due to the Copy Trait
+    
  }
 
- //Instead of writing duplicate code as we have above, we can refactor by writing a function that can be invoked repeatedly
- fn play(instrument_type: Option<&String>) {
-    match instrument_type {
-        Option::Some(instrument) => println!("Playing the {}", instrument),
-        Option::None => println!("Singing with my voice"),
+fn is_item_in_stock() -> Option<bool> {//Option must remain here in the return type because we are specifying the complete Option Enum as a return type
+    let item_exists_in_catalog = true;
+    let item_is_in_stock = false;
+
+    if item_exists_in_catalog && item_is_in_stock {
+        Some(true)
+    } else if item_exists_in_catalog && item_is_in_stock {
+        Some(false)
+    } else {
+        None
     }
- }
+}
