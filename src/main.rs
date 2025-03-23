@@ -1,18 +1,34 @@
- /*The unwrap_or()
- functions similar to unwrap(), but provides a default or back-up value in the case that we have a Option::None
- Trying to call unwrap() on a None variant would provide a panic at runtime*/
+ /*Building an Option from Scratch
+ This exercise is designed to re-create the top-level option enum from scratch to see how it works internally*/
 
+ #[derive(Debug, Copy, Clone)]//this emulates the exact functionality that we have on Rust's regular Option Enum
+enum MyOption {
+    Some(i32),
+    None
+}
+
+impl MyOption {
+    fn unwrap(self) -> i32 {
+        match self {
+            MyOption::Some(value) => value,
+            MyOption::None => panic!("Uh oh"),//remember that with unwrap() on a None variant, we will get a panic at run time. the panic macro emulates that for us
+        }
+    }
+    fn unwrap_or(self, fallback_value: i32) -> i32 {
+        match self {
+            MyOption::Some(value) => value,
+            MyOption::None => fallback_value,
+        }
+    }
+}
 fn main () {
-    let present_value = Some(13);
-    let missing_value: Option<i32> = None;//remember, I have to hardcode the Option<T> with None
+    let some_option = MyOption::Some(100);
+    println!("{}", some_option.unwrap());//will print out 100
+    println!("{:?}", some_option);//will print out Some(100)
+    println!("{}", some_option.unwrap_or(0));//will print out 100
 
-    println!("{}", present_value.unwrap_or(0));//the default is the required parameter in case there isn't a Some(T) 
-    println!("{}", missing_value.unwrap_or(0));//tells rust if we have an Option with the None variant and there is no associated data to extract, fall back to the default value
-
-    let valid_test = Some("I am coding today");
-    let non_valid_test: Option<&str> = None;
-
-    println!("{}", valid_test.unwrap_or("I am not coding today"));
-    println!("{}", non_valid_test.unwrap_or("I am not coding today"));
-
+    let none_option = MyOption::None;
+    println!("{:?}", none_option);//will print out None
+    println!("{}", none_option.unwrap_or(0));//will print out the fallback value of 0
+    println!("{}", none_option.unwrap());//will print out panic at run time and "Uh oh"
  }
