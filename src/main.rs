@@ -1,34 +1,23 @@
- /*Building an Option from Scratch
- This exercise is designed to re-create the top-level option enum from scratch to see how it works internally*/
+ /*Result Enum
+ Option Enums model whether a value is present or absent
+ Result Enum modles an evaluation that can produce either a success or a failure(error)
+ OK Variant indicates a success and stores and associated piece of data of generic type T
+ Err Variant indicated an error and stores an associated piece of date of generic type E
+ 
+ pub enum Result<T, E> {
+    Ok(T),
+    Err(E),
+}*/
 
- #[derive(Debug, Copy, Clone)]//this emulates the exact functionality that we have on Rust's regular Option Enum
-enum MyOption {
-    Some(i32),
-    None
-}
-
-impl MyOption {
-    fn unwrap(self) -> i32 {
-        match self {
-            MyOption::Some(value) => value,
-            MyOption::None => panic!("Uh oh"),//remember that with unwrap() on a None variant, we will get a panic at run time. the panic macro emulates that for us
-        }
-    }
-    fn unwrap_or(self, fallback_value: i32) -> i32 {
-        match self {
-            MyOption::Some(value) => value,
-            MyOption::None => fallback_value,
-        }
-    }
-}
 fn main () {
-    let some_option = MyOption::Some(100);
-    println!("{}", some_option.unwrap());//will print out 100
-    println!("{:?}", some_option);//will print out Some(100)
-    println!("{}", some_option.unwrap_or(0));//will print out 100
+    let ok: Result<i32, &str> = Result::Ok(5);//have to provide the type annotation for Err in order for this code to compile
+    println!("{:?}", ok);//will print Ok(5)
+    let disaster: Result<i32, &str> = Result::Err("Something went wrong");//have to provide the type annotation for Ok in order for this code to compile
+    println!("{:?}", disaster);//will print Err("Something went wrong")
 
-    let none_option = MyOption::None;
-    println!("{:?}", none_option);//will print out None
-    println!("{}", none_option.unwrap_or(0));//will print out the fallback value of 0
-    println!("{}", none_option.unwrap());//will print out panic at run time and "Uh oh"
+    let valid: Result<&str, i32> = Ok("We have a soultion!");//we can drop the Result::, but need to keep it in the concrete type declarations
+    println!("{:?}", valid);
+    let invalid: Result<&str, i32> = Err(0);//We can drop the Result::, but need to keep it in the concrete type declarations
+    println!("{:?}", invalid);
+
  }
