@@ -1,28 +1,18 @@
- /*Top-Level Option Variants
- Rust Prelude: a collection of named constructs that are available automatically in every program. All the top level names availabe to us
- Prelude includes the Option Enum and is available automatically
- Option Enum is so common that we have a shorthand syntax we can use. Instead of Option::Some, we can write Some, instead of Option::None, we can write None*/
+ /*The unwrap_or()
+ functions similar to unwrap(), but provides a default or back-up value in the case that we have a Option::None
+ Trying to call unwrap() on a None variant would provide a panic at runtime*/
 
 fn main () {
-    let item_is_available  = is_item_in_stock();
+    let present_value = Some(13);
+    let missing_value: Option<i32> = None;//remember, I have to hardcode the Option<T> with None
 
-    match item_is_available {
-        Some(true) => println!("Yes, the item is in stock and available"),
-        Some(false) => println!("No, the item is not in stock"),
-        None => println!("We are unable to find the item you are looking for"),
-    }
-    
+    println!("{}", present_value.unwrap_or(0));//the default is the required parameter in case there isn't a Some(T) 
+    println!("{}", missing_value.unwrap_or(0));//tells rust if we have an Option with the None variant and there is no associated data to extract, fall back to the default value
+
+    let valid_test = Some("I am coding today");
+    let non_valid_test: Option<&str> = None;
+
+    println!("{}", valid_test.unwrap_or("I am not coding today"));
+    println!("{}", non_valid_test.unwrap_or("I am not coding today"));
+
  }
-
-fn is_item_in_stock() -> Option<bool> {//Option must remain here in the return type because we are specifying the complete Option Enum as a return type
-    let item_exists_in_catalog = true;
-    let item_is_in_stock = false;
-
-    if item_exists_in_catalog && item_is_in_stock {
-        Some(true)
-    } else if item_exists_in_catalog && item_is_in_stock {
-        Some(false)
-    } else {
-        None
-    }
-}
