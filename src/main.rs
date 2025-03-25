@@ -1,19 +1,36 @@
- //Result Enum - Parse Method on a String
+ //Result Enums as a Return Type
+ //Methods on Result Enums
+
+ fn divide(num: f64, den: f64) -> Result<f64, String> {
+  if den == 0.0 {
+    Err("Cannot divide by zero".to_string())
+  } else {
+    Ok(num/den)
+  }
+ }
 
 fn main () {
-/*this example will return a Result Enum. 
-We have a string slice "50", but we want to extract the integer equivalent from "50" 
-the parse() on a string attempts to extract a different data type
-This operation will either succeed or fail with an error. If the string has numeric content within it, we will succeed, if not, we will fail
-Successful - return a Result Enum with the Ok variant and the variant will store the extracted integer
-Failure - return a Result Enum with the Err variant with it's corresponding error value
-Need to use the turbofish operator to specify the of the success value*/
-   let text = "50";
-   let text_as_number = text.parse::<i32>();//ParseIntError is provided for the Err variant and it it's own specific type
-   println!("{:?}", text_as_number);//will print Ok(50)
+  let result = divide(18.0, 3.0);//print out will be Result is: 6
+  match result {
+    Ok(calculation) => println!("Result is: {}", calculation),
+    Err(message) => println!("{}", message),
+  }
 
-   let text = "Mississippi";
-   let text_as_number = text.parse::<i32>();
-   println!("{:?}", text_as_number);//will print Err(ParseIntError { kind: InvalidDigit }) because we were trying to parse a int that wasn't present
+  let result_two = divide(18.0, 0.0);
+  match result_two {
+    Ok(calculation) => println!("Result is: {}", calculation),
+    Err(message) => println!("{}", message),
+  }
+
+  let result_three = divide(18.0, 2.0);
+  println!("{}", result_three.unwrap());//will extract the piece of data
+
+  let result_five = divide(24.0, 0.0);
+  println!("{}", result_five.unwrap_or(0.0));//the or() must contain the same type as the Ok variant
+  
+  let result_four = divide(18.0, 0.0);
+  println!("{}", result_four.expect("cannot divide by zero"));//panic but will provide message
+
+  //is_ok() and is_err() are methods that will return bool values
 
  }
