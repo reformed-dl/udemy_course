@@ -1,36 +1,22 @@
- //Result Enums as a Return Type
- //Methods on Result Enums
+//Nuances of Unwrap Method on Enums
+//Ownership and Borrowing concerns
+fn operation(great_success: bool) -> Result<&'static str, &'static str> {//using this syntax, allows us to avoid ownership issues
+    if great_success {
+        Ok("Success")
+    } else {
+        Err("Error")
+    }
+}
 
- fn divide(num: f64, den: f64) -> Result<f64, String> {
-  if den == 0.0 {
-    Err("Cannot divide by zero".to_string())
-  } else {
-    Ok(num/den)
-  }
- }
+fn main() {
+    let my_result = operation(true);//Result<&str, &str> 
 
-fn main () {
-  let result = divide(18.0, 3.0);//print out will be Result is: 6
-  match result {
-    Ok(calculation) => println!("Result is: {}", calculation),
-    Err(message) => println!("{}", message),
-  }
+    let content = match my_result {
+        Ok(message) => message,
+        Err(error) => error,
+    };
 
-  let result_two = divide(18.0, 0.0);
-  match result_two {
-    Ok(calculation) => println!("Result is: {}", calculation),
-    Err(message) => println!("{}", message),
-  }
-
-  let result_three = divide(18.0, 2.0);
-  println!("{}", result_three.unwrap());//will extract the piece of data
-
-  let result_five = divide(24.0, 0.0);
-  println!("{}", result_five.unwrap_or(0.0));//the or() must contain the same type as the Ok variant
-  
-  let result_four = divide(18.0, 0.0);
-  println!("{}", result_four.expect("cannot divide by zero"));//panic but will provide message
-
-  //is_ok() and is_err() are methods that will return bool values
-
- }
+    println!("{}", my_result.unwrap());
+    println!("{}", content);
+    println!("{}", my_result.unwrap());
+}
