@@ -1,38 +1,49 @@
-/*Vectors - data structure that is similar to an Array. Arrays are of a homogenous type, defined order and a fixed size. The number of elements cannot change.
-Vectors allow us to have contiguous, homonegous elements, but the number of elements can change
-Vectors are stored on the heap at runtime
-
-Vec is the type and is included in the Rust Prelude
-vectors implement the debug trait*/
+/*Vectors - Reading Elements and the get()
+Same rules apply for copy, borrow and move as with other types
+The get() extracts a vector element by index position. It returns an Option Enum, Some() or None*/
 
 fn main() {
-   let pizza_diameters: Vec<i32> = Vec::new();//will return a new empty Vector, but must provide specific type annotations
-   let ball_diamters = Vec::<i32>::new();//can also define specific type annotation using the turbofish operator
-   println!("{:?}", pizza_diameters);//output will be []
-   println!("{:?}", ball_diamters);
+   let pizza_diameters = vec![8, 10, 12, 14];
 
-   //if we know the initial values that we start with, we use the vec macro
-   let records = vec!["Rolling Stones", "Doors", "Lynard Skyndard"];
-   println!("{:?}", records);
+   let pepperoni = String::from("Pepperoni");
+   let mushrooms = String::from("Mushrooms");
+   let sausage = String::from("Sausage");
 
-   //push() adds a single element to the end of the vector
-   let mut food = vec!["Pasta", "Steak", "Ribs"];
-   println!("{:?}", food);
-   food.push("Chicken Wings");
-   println!("{:?}", food);
+   let toppings = vec![pepperoni, mushrooms, sausage];//ownership has moved from the variables to the vec
+   println!("{:?}", toppings);
+   //println!("{}", pepperoni);//cannot use these variables now that ownership has moved
 
-   //insert() allows to add an element at a certain index position
-   food.insert(1, "Mac and Cheese");
-   println!("{:?}", food);
+   let value = pizza_diameters[2];//because i32 implements the copy trait, a full copy is made and no compilier issue
+   println!("{}", value);
+   println!("{:?}", pizza_diameters);
 
-   //pop() attempts to remove the last element from the vec and return it
-   //pop() is an Option Enum, Some() and None
-   let meal = food.pop();
-   println!("{:?}", meal);//output will be Some("Chicken Wings")
-   println!("{:?}", food);//one pop() has been called, the last element is now removed
+   //let pizza_topping = toppings[1];//cannot perform this operation because vec contains Strings and Rust will not move ownership for one element of the vec
+   //instead we will need to utilize a reference
+   let pizza_topping = &toppings[2];
+   println!("{}", pizza_topping);
 
-   //remove() removes an element by the index position
-   food.remove(0);//if index does not exist, will panic
-   println!("{:?}", food);//first element has now been removed from the vector
+   //slices follow the same syntax as before
+   let reformed_pizza = &toppings[..1];
+   println!("{:?}", reformed_pizza);
+   let gross_pizza = &toppings[1..];
+   println!("{:?}", gross_pizza);
 
+   //get()
+   let option = toppings.get(0);
+   match option {
+      Some(topping) => println!("The topping is: {}", topping),
+      None => println!("No value at that position"),
+   }
+
+   let option_two = toppings.get(3);//get() allows us to avoid a panic
+   match option_two {
+      Some(topping) => println!("The topping is: {}", topping),
+      None => println!("No value at that position"),
+   }
+
+   let option_three = toppings.get(1);
+   println!("{:?}", option_three);//Some("Mushrooms")
+
+   let option_four = toppings.get(100);
+   println!("{:?}", option_four);//None
 }
