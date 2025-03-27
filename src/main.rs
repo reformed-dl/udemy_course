@@ -1,27 +1,37 @@
-/*Vectors - Ownership
-Same rules apply as other types
+/*Vectors - Writing and Overwriting Elements
 
-When borrowing a reference to a vector:
-if there ia a mutable reference, there can be no other references, mutable or otherwise
-if there is an immutable reference, we can have as many other immutable references as we want
-
-When we insert or remove elements from a vector, behind the scenes that may require new memory allocation on the heap
-This can cause issues with the compilier based on certain scenarios*/
+Vector Capacity - the maximum number of elements that the vector can contain*/
 
 fn main() {
    let led_zepplin = String::from("Led Zepplin");
    let ccr = String::from("CCR");
    let pearl_jam = String::from("Pearl Jam");
 
-   let bands = vec![led_zepplin, ccr, pearl_jam];//ownership is moved and variables are no longer usable
-   let mut music = bands;//ownership is moved and bands is no longer usable
+   let mut bands = vec![led_zepplin, ccr, pearl_jam];
 
-   let music_reference = &music[2];//this will work here as we have a single immutable reference for the vec
-   println!("{}", music_reference);
+   bands[2] = String::from("Dire Straits");//this will overwrite an element in the vector
+   println!("{:?}", bands);
 
-   music.push(String::from("Cream"));//this is a mutable reference to the music vector and alters the vector
-   println!("{:?}", music);
-   //now, if I try and use music_reference after this point, I will get an error
-   //I can use music_reference up until the point where I use a mutable reference, that is the lifetime of the music_reference variable
-   
+   let target_band = &mut bands[1];
+   target_band.push_str("-Credence Clearwater Revival");//concatenate text to the string
+   println!("{:?}", bands);
+
+   let another_band = &bands[0];//I can use a reference here even though there is a mutable reference above, because Rust defined the lifetime of that mutable reference
+   println!("{:?}", another_band);//I could not use this before the end of the lifetime of the mutable reference or I would receive a compiler
+
+   //Vector Capacity
+   let mut seasons: Vec<&str> = Vec::with_capacity(4);//this will return an empty vector with a maximum number of 4 elements
+   println!("Length: {}, Capacity: {}", seasons.len(), seasons.capacity());//output Length: 0, Capacity: 4
+
+   seasons.push("Summer");
+   seasons.push("Fall");
+   seasons.push("Winter");
+   seasons.push("Spring");
+   println!("Length: {}, Capacity: {}", seasons.len(), seasons.capacity());//output Length: 4, Capacity: 4
+
+   seasons.push("Summer Again");
+   println!("Length: {}, Capacity: {}", seasons.len(), seasons.capacity());//output Length: 5, Capacity: 8
+   //The capacity increased due to push and the previous allocated memory for the vec with a capacity of 4 is deallocated and a new vec with the capacity of 8 is stored on the heap
+   //This is why Rust prohibits more than one mutable reference at a time, so that a reference isn't pointing to something that has been deallocated from memory
+
 }
