@@ -1,49 +1,27 @@
-/*Vectors - Reading Elements and the get()
-Same rules apply for copy, borrow and move as with other types
-The get() extracts a vector element by index position. It returns an Option Enum, Some() or None*/
+/*Vectors - Ownership
+Same rules apply as other types
+
+When borrowing a reference to a vector:
+if there ia a mutable reference, there can be no other references, mutable or otherwise
+if there is an immutable reference, we can have as many other immutable references as we want
+
+When we insert or remove elements from a vector, behind the scenes that may require new memory allocation on the heap
+This can cause issues with the compilier based on certain scenarios*/
 
 fn main() {
-   let pizza_diameters = vec![8, 10, 12, 14];
+   let led_zepplin = String::from("Led Zepplin");
+   let ccr = String::from("CCR");
+   let pearl_jam = String::from("Pearl Jam");
 
-   let pepperoni = String::from("Pepperoni");
-   let mushrooms = String::from("Mushrooms");
-   let sausage = String::from("Sausage");
+   let bands = vec![led_zepplin, ccr, pearl_jam];//ownership is moved and variables are no longer usable
+   let mut music = bands;//ownership is moved and bands is no longer usable
 
-   let toppings = vec![pepperoni, mushrooms, sausage];//ownership has moved from the variables to the vec
-   println!("{:?}", toppings);
-   //println!("{}", pepperoni);//cannot use these variables now that ownership has moved
+   let music_reference = &music[2];//this will work here as we have a single immutable reference for the vec
+   println!("{}", music_reference);
 
-   let value = pizza_diameters[2];//because i32 implements the copy trait, a full copy is made and no compilier issue
-   println!("{}", value);
-   println!("{:?}", pizza_diameters);
-
-   //let pizza_topping = toppings[1];//cannot perform this operation because vec contains Strings and Rust will not move ownership for one element of the vec
-   //instead we will need to utilize a reference
-   let pizza_topping = &toppings[2];
-   println!("{}", pizza_topping);
-
-   //slices follow the same syntax as before
-   let reformed_pizza = &toppings[..1];
-   println!("{:?}", reformed_pizza);
-   let gross_pizza = &toppings[1..];
-   println!("{:?}", gross_pizza);
-
-   //get()
-   let option = toppings.get(0);
-   match option {
-      Some(topping) => println!("The topping is: {}", topping),
-      None => println!("No value at that position"),
-   }
-
-   let option_two = toppings.get(3);//get() allows us to avoid a panic
-   match option_two {
-      Some(topping) => println!("The topping is: {}", topping),
-      None => println!("No value at that position"),
-   }
-
-   let option_three = toppings.get(1);
-   println!("{:?}", option_three);//Some("Mushrooms")
-
-   let option_four = toppings.get(100);
-   println!("{:?}", option_four);//None
+   music.push(String::from("Cream"));//this is a mutable reference to the music vector and alters the vector
+   println!("{:?}", music);
+   //now, if I try and use music_reference after this point, I will get an error
+   //I can use music_reference up until the point where I use a mutable reference, that is the lifetime of the music_reference variable
+   
 }
