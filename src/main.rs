@@ -3,7 +3,7 @@
 Vector Capacity - the maximum number of elements that the vector can contain*/
 
 fn main() {
-   let led_zepplin = String::from("Led Zepplin");
+   let led_zepplin = String::from("Led Zeppelin");
    let ccr = String::from("CCR");
    let pearl_jam = String::from("Pearl Jam");
 
