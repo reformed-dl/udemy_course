@@ -9,9 +9,9 @@ pub const MANAGER: &str = "Ivan Inventory";//in order to access this const, must
 
    #[derive(Debug)]
    pub struct Item {
-      name: String,
-      category: ProductCategory,
-      quantity: u32,
+      pub name: String,
+      pub category: ProductCategory,
+      pub quantity: u32,
    }
 
    pub fn talk_to_manager() {
