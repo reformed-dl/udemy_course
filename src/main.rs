@@ -19,20 +19,23 @@ Same process/options as before, but with an additional layer of depth*/
 mod inventory;
 mod orders;
 
+use inventory::{talk_to_manager, MANAGER, FLOOR_SPACE};
+use inventory::products::{Item, ProductCategory};//use the {} to be able to pull multiple names from same module
+
 fn main() {
     println!(
         "Our managers are {} and {}, we have {} square feet of floor space.",
-        crate::inventory::MANAGER,//this is technically the same as excluding the crate below as we are in the main.rs file already
-        orders::MANAGER,
-        inventory::FLOOR_SPACE
+        MANAGER,//using the 'use' keyword allows us to avoid declaring the path
+        orders::MANAGER,//this is technically the same as excluding the crate below as we are in the main.rs file already
+        FLOOR_SPACE
     );
 
-    inventory::talk_to_manager();
+    talk_to_manager();
 
-    let favorite_category = inventory::products::ProductCategory::Hammer;
+    let favorite_category = ProductCategory::Hammer;//eliminated the excess path indicators with use keyword above
     println!("My favorite category of item is {:?}", favorite_category);
 
-    let tall_ladder = inventory::products::Item {
+    let tall_ladder = Item {
         name: String::from("Ladder-o-matic 2000"),
         category: favorite_category,
         quantity: 100,
