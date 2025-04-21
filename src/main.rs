@@ -22,7 +22,7 @@ mod orders;
 fn main() {
     println!(
         "Our managers are {} and {}, we have {} square feet of floor space.",
-        inventory::MANAGER,
+        crate::inventory::MANAGER,//this is technically the same as excluding the crate below as we are in the main.rs file already
         orders::MANAGER,
         inventory::FLOOR_SPACE
     );
