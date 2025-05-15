@@ -1,42 +1,22 @@
-/*HashMaps are stored on the Heap and follow the same ownership rules as other Heap Types.
-The HashMap takes ownership of data assigned to it that do not implement the copy trait*/
-
 use std::collections::HashMap;
 fn main() {
-   let drink = String::from("Latte");
-   let milk = String::from("Oat Milk");
-   let mut coffee = HashMap::new();
-   coffee.insert(drink, milk);//ownership is transferred from the drink, milk variables to the HashMap
-   println!("{:?}", coffee);
-   println!("{}", coffee.len());//len() provides the number of Key-Value pairs contained within the HashMap (1)
+  let mut coffe_pairings: HashMap<&str, &str> = HashMap::new();
+  let drink = String::from("Latte");
+  let milk = String::from("Oat Milk");
+  coffe_pairings.insert(&drink, &milk);
+  coffe_pairings.insert("Flat White", "Almond Milk");
+  println!("{:?}", coffe_pairings);
 
-   //There are options to retain ownership
-   //We can pass in references to the Strings &String
-   //Or we can hardcode the HashMap type with &str and then pass in references to the Strings due to the dereferencing feature
-   let mut capitals: HashMap<&str, &str> = HashMap::new();
-   let city = String::from("Tallahassee");
-   let state = String::from("Florida");
-   capitals.insert(&city, &state);
-   capitals.insert("Albany", "New York");//this allows us the flexibility to pass in new string slices and not have type mismatches
-   println!("{:?}", capitals);
-   println!("{} {}", city, state);
+  //Every Key must be unique, if we have duplicate keys, the old value will be overwritten by the new value
+  coffe_pairings.insert("Latte", "Pistachio Milk");
+  println!("{:?}", coffe_pairings);//Previous Key - Value pair has been overwritten
 
-   //Accessing a Value from a Key
-   let state = capitals["Tallahassee"];//enter the Key within the [] and the Value is returned. This will work as long as a existing Key is entered
-   println!("{}", state);
-   //If the Key does not exist, we will get a panic at runtime
-   //get() - we wil return a Option Enum, the Sum Variant Associated data will be a reference is the Key exists to avoid owenership being transferred
-   let states = capitals.get("Tallahassee");
-   println!("{:?}", states);//Some(Florida)
-   let error = capitals.get("Milwaukee");
-   println!("{:?}", error);//because we entered a Key that doesn't exist, result is None
-
-   //copied() makes a copy of the type and not a reference to the type
-   let east_city = capitals.get("Albany").copied().unwrap_or("This Key Does Not Exist");
-   println!("{}", east_city);
-
-   let wrong_city = capitals.get("Tempe").copied().unwrap_or("This Key Does Not Exist");
-   println!("{}", wrong_city);
-
+  //Entry Method - Accepts a HashMap Key and returns an Enum called Entry. Entry has 2 Variants, Occupied-the possibility that the given key exists and the
+  //Vacant - possibility that the given key does not Vacant variant and will insert the Key and associated Value
+  //.or_insert() will only come into play for the Vacant 
+  coffe_pairings.entry("Latte").or_insert("Skim Milk");
+  println!("{:?}", coffe_pairings);//nothing changes
+  coffe_pairings.entry("Americano").or_insert("Whole Milk");
+  println!("{:?}", coffe_pairings);//new Key-Value pair inserted
 
 }
