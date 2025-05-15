@@ -20,4 +20,23 @@ fn main() {
    capitals.insert("Albany", "New York");//this allows us the flexibility to pass in new string slices and not have type mismatches
    println!("{:?}", capitals);
    println!("{} {}", city, state);
+
+   //Accessing a Value from a Key
+   let state = capitals["Tallahassee"];//enter the Key within the [] and the Value is returned. This will work as long as a existing Key is entered
+   println!("{}", state);
+   //If the Key does not exist, we will get a panic at runtime
+   //get() - we wil return a Option Enum, the Sum Variant Associated data will be a reference is the Key exists to avoid owenership being transferred
+   let states = capitals.get("Tallahassee");
+   println!("{:?}", states);//Some(Florida)
+   let error = capitals.get("Milwaukee");
+   println!("{:?}", error);//because we entered a Key that doesn't exist, result is None
+
+   //copied() makes a copy of the type and not a reference to the type
+   let east_city = capitals.get("Albany").copied().unwrap_or("This Key Does Not Exist");
+   println!("{}", east_city);
+
+   let wrong_city = capitals.get("Tempe").copied().unwrap_or("This Key Does Not Exist");
+   println!("{}", wrong_city);
+
+
 }
