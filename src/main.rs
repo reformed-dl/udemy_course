@@ -1,45 +1,68 @@
-/*HashSet Operations - Common mathematical set operations that deal with comparing different HashSets
-i.e. finding the values that can be found in both HashSets, finding the values that can be found in one and not the other, etc.
-There are a variety of different methods to employ when comparing different HashSets */
+/*
+Bring the HashMap type into the current's file's namespace.
 
-use std::collections::HashSet;
+Declare a `sauces_to_meals` HashMap. The keys will be
+string slices and the values will be a vector of string
+slices. Use the `from` function to populate the HashMap
+with 2 key-value pairs:
+
+Key: "Ketchup"
+Value: Vector of ["French Fries", "Burgers", "Hot Dogs"]
+
+Key: "Mayonnaise"
+Value: Vector of ["Sandwiches", "Burgers", "Coleslaw"]
+
+Use the `insert` method to add the following key-value
+pair to the HashMap.
+
+Key: "Mustard"
+Value: Vector of ["Hot dog", "Burgers", "Pretzels"]
+
+Use the `remove` method to remove the key-value pair
+where "Mayonnaise" is the key. Find a way to retrieve
+the vector inside the Option and print it out.
+
+Use the `get` method to retrieve the key-value pair
+where "Mustard" is the key. Find a way to retrieve
+the vector inside the Option and print it out.
+
+Use the `entry` and `or_insert` methods to add the
+following key-value pair:
+
+Key: "Soy Sauce"
+Value: Vector of ["Sushi", "Dumplings"]
+
+Finally, print out the final `sauces_to_meals` HashMap.
+
+The final result should be:
+{
+  "Ketchup": ["French Fries", "Burgers", "Hot Dogs"],
+  "Soy Sauce": ["Sushi", "Dumplings"],
+  "Mustard": ["Hot dog", "Burgers", "Pretzels"]
+}
+*/
+
+use std::collections::HashMap;
+
 fn main() {
-    let mut concert_que: HashSet<&str> = HashSet::new();//Boris & Melissa
-    let mut movie_que = HashSet::new();//Boris & Phil
+    let mut sauces_to_meals = HashMap::from([
+        ("Ketchup", vec!["French Fries", "Burgers", "Hot Dogs"]),
+        ("Mayonnaise", vec!["Sandwiches", "Burgers", "Coleslaw"]),
+    ]);
+    sauces_to_meals.insert("Mustard", vec!["Hot dog", "Burgers", "Pretzels"]);
 
-    concert_que.insert("Boris");
-    concert_que.insert("Melissa");
+    println!("{:?}", sauces_to_meals.remove("Mayonnaise").unwrap()); //remove returns Some() or None, unwarp provides the value within Some()
 
-    movie_que.insert("Boris");
-    movie_que.insert("Phil");
+    let mustard = sauces_to_meals.get("Mustard"); //Some Variant provides a reference to the value to not take ownership
+    match mustard {
+        //using a match statement avoids any potential errors at runtime
+        Some(meal) => println!("Mustard is great on these meals: {:?}", meal),
+        None => println!("There were no meals found for that sauce"),
+    }
 
-    //Union - provides the union, or combination of entry found in both sets, no duplicates. Lists all of the unique entries.
-    println!("{:?}", concert_que.union(&movie_que));//call the method on one HashSet, pass in a reference to the other HashSet as an argument
-    println!("{:?}", movie_que.union(&concert_que));//output will be the same for both, order may change, but contents remains consistent
+    sauces_to_meals
+        .entry("Soy Sauce")
+        .or_insert(vec!["Sushi", "Dumplings"]);
 
-    //Difference - Give you the values in the first set, but not found in the second set
-    println!("{:?}", concert_que.difference(&movie_que));//["Melissa"] output will change depending on which HashSet is first
-    println!("{:?}", movie_que.difference(&concert_que));//["Phil"]
-
-    //Symmetric Difference - provides values that are exclusive to one set, but not found in both. Boris will not be provided in either output
-    println!("{:?}", concert_que.symmetric_difference(&movie_que));
-    println!("{:?}", movie_que.symmetric_difference(&concert_que));
-
-    //Is Disjoint - Returns a Boolean - True if neither HashSet has any values in Common, False if they do.
-    println!("{:?}", concert_que.is_disjoint(&movie_que));
-    println!("{:?}", movie_que.is_disjoint(&concert_que));
-
-    //Is Subset - Returns a Boolean. True if the set that the method is invoked upon is a subset of the argument passed in
-    println!("{:?}", concert_que.is_subset(&movie_que));
-    println!("{:?}", movie_que.is_subset(&concert_que));
-
-    let mut attendees = HashSet::new();
-    attendees.insert("Boris");
-    println!("{:?}", attendees.is_subset(&concert_que));//This returns true because All values in attendees are obtained in concert_que
-
-    //Is Superset - Inverse of is_subset. Returns true if set method invoked on contains all the values of the passed argument
-    println!("{:?}", concert_que.is_superset(&attendees));
-    println!("{:?}", attendees.is_superset(&concert_que));
-
-
+    println!("{:#?}", sauces_to_meals);
 }
