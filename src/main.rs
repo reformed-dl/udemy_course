@@ -1,68 +1,41 @@
-/*
-Bring the HashMap type into the current's file's namespace.
+/*Error Handling
 
-Declare a `sauces_to_meals` HashMap. The keys will be
-string slices and the values will be a vector of string
-slices. Use the `from` function to populate the HashMap
-with 2 key-value pairs:
+eprintln!() is a macro that prints messages to the standard error, println!() prints messages to the standard output. Think of standard output and
+standard error as different tv channels. We can chooses which channel to send different outputs to.
 
-Key: "Ketchup"
-Value: Vector of ["French Fries", "Burgers", "Hot Dogs"]
+To create a txt file from the terminal in VS Code, cargo run > filename.txt, anything in the compiler that prints to the standard output will
+print to the txt file, anything that prints to the error file will terminal */
 
-Key: "Mayonnaise"
-Value: Vector of ["Sandwiches", "Burgers", "Coleslaw"]
-
-Use the `insert` method to add the following key-value
-pair to the HashMap.
-
-Key: "Mustard"
-Value: Vector of ["Hot dog", "Burgers", "Pretzels"]
-
-Use the `remove` method to remove the key-value pair
-where "Mayonnaise" is the key. Find a way to retrieve
-the vector inside the Option and print it out.
-
-Use the `get` method to retrieve the key-value pair
-where "Mustard" is the key. Find a way to retrieve
-the vector inside the Option and print it out.
-
-Use the `entry` and `or_insert` methods to add the
-following key-value pair:
-
-Key: "Soy Sauce"
-Value: Vector of ["Sushi", "Dumplings"]
-
-Finally, print out the final `sauces_to_meals` HashMap.
-
-The final result should be:
-{
-  "Ketchup": ["French Fries", "Burgers", "Hot Dogs"],
-  "Soy Sauce": ["Sushi", "Dumplings"],
-  "Mustard": ["Hot dog", "Burgers", "Pretzels"]
-}
-*/
-
-use std::collections::HashMap;
+use std::fs::File; //we are accessing the standard library, fs is the file system module, File is a struct that models a file that we can read/write
+                   //This struct contains an Associated function called Open, which is a Result Enum
+                   //Success = Ok->associated data is the File struct;
+                   //Failure = Err -> associated data is error type that holds specific information about the error that occurred
+use std::process;
 
 fn main() {
-    let mut sauces_to_meals = HashMap::from([
-        ("Ketchup", vec!["French Fries", "Burgers", "Hot Dogs"]),
-        ("Mayonnaise", vec!["Sandwiches", "Burgers", "Coleslaw"]),
-    ]);
-    sauces_to_meals.insert("Mustard", vec!["Hot dog", "Burgers", "Pretzels"]);
+    let file = File::open("story.txt"); //Since story.txt already exists within the same project, we don't have to provide the full path
+    println!("{:#?}", file); //Returns Ok with the entire File Struct which stores fields about the fie: path, read: bool, write: bool, etc
 
-    println!("{:?}", sauces_to_meals.remove("Mayonnaise").unwrap()); //remove returns Some() or None, unwarp provides the value within Some()
+    let nonsense = File::open("nonsense.txt");
+    println!("{:#?}", nonsense); //Returns Err Os Struct { code: 2, kind: NotFound, message: "No such file or directory", }
 
-    let mustard = sauces_to_meals.get("Mustard"); //Some Variant provides a reference to the value to not take ownership
-    match mustard {
-        //using a match statement avoids any potential errors at runtime
-        Some(meal) => println!("Mustard is great on these meals: {:?}", meal),
-        None => println!("There were no meals found for that sauce"),
-    }
+    //Using a match statement to account for both possibilities
+    let next_file = match File::open("story.txt") {
+      Ok(next_file) => next_file,//Ok arm is matched and this is returned and assigned to the next_file variable
+      Err(error) => {
+        eprintln!("Something went wrong reading the file. The error was {:?}", error);
+        process::exit(1)//since we matched on the Ok arm, no termination and code continues
+      }
+    };
+    println!("{:#?}", next_file);//File Struct is printed   
 
-    sauces_to_meals
-        .entry("Soy Sauce")
-        .or_insert(vec!["Sushi", "Dumplings"]);
+    let new_file = match File::open("nofile.txt") {
+        Ok(new_file) => new_file,
+        Err(error) => {
+            eprintln!("Something went wrong reading the file. The error was {:?}", error); //error message will be sent to the error output
+            process::exit(1) //program will terminate
+        }
+    };
+    println!("{:#?}", new_file);//this code is never ran
 
-    println!("{:#?}", sauces_to_meals);
 }
