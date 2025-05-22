@@ -1,25 +1,69 @@
-/* Error-Handling - Using ? Operator with Option Enums, Some() - stores 1 piece of associated data, None - stores nothing
-If the Option holds the None Variant, then the function will terminate early and return the None variant
-If the Option holds the Some Variant, then the associated data will be pulled out and become the value of the expression and the function continues
+/*Define a `write_to_file` function. The function
+should ask the user the following questions:
 
-Very similar to using with Result, if you have Ok or Some Variants, function continues; Err or None, function terminates early
-*/
+What file would you like to write to?
+What would you like to write to the file?
 
+Collect the user's two entries as Strings. If something
+fails in either collection, propagate the error upwards;
+the main function (the caller) will handle the error
+later.
+
+Then, use the file system module's `write` function
+to write the user's specified contents to their
+requested text file. The documentation for `write`
+can be  found here:
+https://doc.rust-lang.org/std/fs/fn.write.html
+
+If the `write` function fails, propagate the error
+upwards as well.
+
+Your `write_to_file` function should return an
+`io::Result`.
+
+After you write to the file, return a `Ok` variant
+storing the user's requested file name.
+
+In the main function, use a match statement to react
+to both variants of the returned Result enum. If
+everything worked, output the text "Successfully
+wrote to file { }" and interpolate the file name you
+collected in the `write_to_file` function.
+
+If there was any failure, output "There was an error:
+{error}" to the standard error output and
+interpolate the error. Then, exit the program with a
+status code of 1. */
+
+use std::fs;
+use std::io;
+use std::process;
 fn main() {
-  //In this example we want to calculate the lenghth of the last element in a Vector. Remove the last element and then provide the length
-  let mut animals = vec!["Horse", "Giraffe", "Elephant"];
-  //now we can call the length_of_last_element function and pass in our Vec
-  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt Some(8)
-  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt Some(7)
-  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt Some(5)
-  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt None
-  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt None
-
+  match write_to_file() {
+    Ok(file_name) => println!("Successfully wrote to file: {}", file_name),
+    Err(error) => {
+      eprintln!("There was an error: {}", error);
+      process::exit(1)
+    }
+  }
 }
 
-fn length_of_last_element(input: &mut Vec<&str>) -> Option<usize> {//this is the type of the data on the Some Variant
-  let last_element = input.pop()?;//pop() returns an Option, adding the ? says if Some-Keep going, if None-terminate early
-  Some(last_element.len())//manually packaged up last_element.len() into a Option::Some() and set it as the implicit return
-}
+fn write_to_file() -> io::Result<String> {
+  let input = io::stdin();
+
+  println!("What file would you like to write to?");
+  let mut requested_file = String::new();
+  input.read_line(&mut requested_file)?;//using ? instead of if let Err to propogate errors up to main function
+
+
+  println!("What would you like to write to the file?");
+  let mut content = String::new();
+  input.read_line(&mut content)?;//using ? to propogate errors up
+
+  //the file system module has an associated function called "write" that accepts the file name and the contents for arguments
+  //references need to be passed in so owenership doesn't transfer, but since trim() returns a string slice this will accomplish that for us
+  fs::write(requested_file.trim(), content.trim())?;//useing ? to propogate errors up
   
+  Ok(requested_file)
+}
  
