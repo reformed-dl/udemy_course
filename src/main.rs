@@ -1,41 +1,25 @@
-/*Error Handling- read_to_string associated function.
-This is different from the read_to_string() method that is called on the File struct
-the file system module "fs", includes a helpful function called read_to_string that accomplishes everything we want and wrote code for previously
-the read_to_string function accepts a file path, attempts to open the file, reads the contents of the file to a heap string and then return the string
-packaged up in the Result Enums Ok Variant. If something fails along the way, it instead returns the io:Error type packaged up in the Result Enums Err Variant
+/* Error-Handling - Using ? Operator with Option Enums, Some() - stores 1 piece of associated data, None - stores nothing
+If the Option holds the None Variant, then the function will terminate early and return the None variant
+If the Option holds the Some Variant, then the associated data will be pulled out and become the value of the expression and the function continues
+
+Very similar to using with Result, if you have Ok or Some Variants, function continues; Err or None, function terminates early
 */
 
-//use std::fs::File; we are going to remove File and stop at fs
-use std::fs;
-//use std::io::{self, stdin, Read}; we no longer need the Read trait either
-use std::io::{self, stdin};
-
-
 fn main() {
-  
-   let file_result = read_file();
-   
-   match file_result {
-    Ok(contents) => println!("{}", contents),
-    Err(error) => {
-      eprintln!("There was an error: {}", error)
-    }
-  }
+  //In this example we want to calculate the lenghth of the last element in a Vector. Remove the last element and then provide the length
+  let mut animals = vec!["Horse", "Giraffe", "Elephant"];
+  //now we can call the length_of_last_element function and pass in our Vec
+  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt Some(8)
+  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt Some(7)
+  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt Some(5)
+  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt None
+  println!("The length of the last element of the Vector is: {:?}", length_of_last_element(&mut animals));//-> otpt None
+
 }
 
-fn read_file() -> Result<String, io::Error> {
-  println!("Please enter the name of the file you would like to read");
-
-    let mut input = String::new();
-    stdin().read_line(&mut input)?;
-
-    fs::read_to_string(input.trim())//no semicolon for the implicit return
-
-    //the read_to_function associated function basically does everything coded below
-    //let mut file_contents = String::new();
-    //File::open(&mut input.trim())?.read_to_string(&mut file_contents)?;
-   
-    //Ok(file_contents)
+fn length_of_last_element(input: &mut Vec<&str>) -> Option<usize> {//this is the type of the data on the Some Variant
+  let last_element = input.pop()?;//pop() returns an Option, adding the ? says if Some-Keep going, if None-terminate early
+  Some(last_element.len())//manually packaged up last_element.len() into a Option::Some() and set it as the implicit return
 }
   
  
