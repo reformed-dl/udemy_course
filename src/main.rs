@@ -1,69 +1,28 @@
-/*Define a `write_to_file` function. The function
-should ask the user the following questions:
+/* Traits - A distinguishing quality, characteristic, function or ability. 
 
-What file would you like to write to?
-What would you like to write to the file?
+Real World Examples
+Flight is a trait, the quality of being able to fly. Birds, planes, bugs, etc 
+Storage Trait - garage, boxes, USB drive. All different types of things, but express the same Trait of storage
+Illumination Trait - candle, lamp, sun
 
-Collect the user's two entries as Strings. If something
-fails in either collection, propagate the error upwards;
-the main function (the caller) will handle the error
-later.
+Just as in the real world, many different Types in Rust can implement the same Trait
+A Trait is a contract that describes the functionality that a Type should have.
+We use the word "implement" to describe when a type honors a Trait's requirements. (The sun implements the illumination trait)
 
-Then, use the file system module's `write` function
-to write the user's specified contents to their
-requested text file. The documentation for `write`
-can be  found here:
-https://doc.rust-lang.org/std/fs/fn.write.html
+A Trait definition declares the method(s) that a Type implementing that trait MUST have
+    Method Name, Parameters with Types, Return Value Type
 
-If the `write` function fails, propagate the error
-upwards as well.
+Common Examples we have seen already: 
+Display and Debug require a Type define methods for formatting itself in a string representation
+Clone requires a Type to define a clone method for creating a duplicate of itself
 
-Your `write_to_file` function should return an
-`io::Result`.
+Once we have defined a Trait, we can implement it on structs and enums. The Type then promises to honor the Trait's contract.
+Multiple Types can implement the same Trait.
+Types can implement multiple Traits.
+*/
 
-After you write to the file, return a `Ok` variant
-storing the user's requested file name.
-
-In the main function, use a match statement to react
-to both variants of the returned Result enum. If
-everything worked, output the text "Successfully
-wrote to file { }" and interpolate the file name you
-collected in the `write_to_file` function.
-
-If there was any failure, output "There was an error:
-{error}" to the standard error output and
-interpolate the error. Then, exit the program with a
-status code of 1. */
-
-use std::fs;
-use std::io;
-use std::process;
 fn main() {
-  match write_to_file() {
-    Ok(file_name) => println!("Successfully wrote to file: {}", file_name),
-    Err(error) => {
-      eprintln!("There was an error: {}", error);
-      process::exit(1)
-    }
-  }
-}
-
-fn write_to_file() -> io::Result<String> {
-  let input = io::stdin();
-
-  println!("What file would you like to write to?");
-  let mut requested_file = String::new();
-  input.read_line(&mut requested_file)?;//using ? instead of if let Err to propogate errors up to main function
-
-
-  println!("What would you like to write to the file?");
-  let mut content = String::new();
-  input.read_line(&mut content)?;//using ? to propogate errors up
-
-  //the file system module has an associated function called "write" that accepts the file name and the contents for arguments
-  //references need to be passed in so owenership doesn't transfer, but since trim() returns a string slice this will accomplish that for us
-  fs::write(requested_file.trim(), content.trim())?;//useing ? to propogate errors up
   
-  Ok(requested_file)
 }
+
  

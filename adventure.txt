@@ -1,1 +1,0 @@
-Writing code in Rust is an adventure
