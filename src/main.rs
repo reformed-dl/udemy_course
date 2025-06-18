@@ -1,28 +1,80 @@
-/* Traits - A distinguishing quality, characteristic, function or ability. 
-
-Real World Examples
-Flight is a trait, the quality of being able to fly. Birds, planes, bugs, etc 
-Storage Trait - garage, boxes, USB drive. All different types of things, but express the same Trait of storage
-Illumination Trait - candle, lamp, sun
-
-Just as in the real world, many different Types in Rust can implement the same Trait
-A Trait is a contract that describes the functionality that a Type should have.
-We use the word "implement" to describe when a type honors a Trait's requirements. (The sun implements the illumination trait)
-
-A Trait definition declares the method(s) that a Type implementing that trait MUST have
-    Method Name, Parameters with Types, Return Value Type
-
-Common Examples we have seen already: 
-Display and Debug require a Type define methods for formatting itself in a string representation
-Clone requires a Type to define a clone method for creating a duplicate of itself
-
-Once we have defined a Trait, we can implement it on structs and enums. The Type then promises to honor the Trait's contract.
-Multiple Types can implement the same Trait.
-Types can implement multiple Traits.
+/* Creating an Accommodation Trait for Hotel Bookings
 */
 
-fn main() {
-  
+use std::collections::HashMap;
+
+trait Accommodation {
+    //We are defining which methods a Type MUST implement if they implement the Accommodation Trait
+    //Writing the code this way (not defining a code of block in the method) requires any Type that implements the Trait to define the code black when implemented
+    /* Another option is defining the body of the method in the Trait, so the Type implementing the trait would just use the generic.
+    Example, for get_description, we could write it as follows:
+        fn get_description(&self) -> String {
+          String::from("A wonderful place to stay")
+    } 
+    Then the Type implementing the Trait wouldn't have to implement the method and would just use the generic */
+    fn get_description(&self) -> String;
+    fn book(&mut self, name: &str, nights: u32) -> (); // could also accomplish same with no return type instead of the empty tuple return type
 }
 
- 
+#[derive(Debug)]
+struct Hotel {
+    name: String,
+    reservation: HashMap<String, u32>,
+}
+
+impl Hotel {
+    fn new(name: &str) -> Self {
+        Self {
+            name: name.to_string(),
+            reservation: HashMap::new(),
+        }
+    }
+}
+
+impl Accommodation for Hotel {
+    // this is how we implement the Accomodation Trait on Hotel struct. We must implement all Trait items as well
+    //Rust analyzer recognizes the parameters and return types we defined above and will automatically provide them when we code the Trait items
+    fn get_description(&self) -> String {
+        format!("{} is the pinnacle of luxury", self.name) // reaching into the Hotel struct and pulling out the name field and returning it with format!
+    }
+
+    fn book(&mut self, name: &str, nights: u32) -> () {
+        self.reservation.insert(name.to_string(), nights); //using insert() mutates the struct -> &mut self. insert() allows us to insert name and nights for k & v
+    }
+}
+
+#[derive(Debug)]
+struct AirBnB {
+    host: String,
+    guests: Vec<(String, u32)>,
+}
+
+impl AirBnB {
+    fn new(host: &str) -> Self {
+        Self {
+            host: host.to_string(),
+            guests: vec![],
+        }
+    }
+}
+
+impl Accommodation for AirBnB {
+    fn get_description(&self) -> String {
+        format!("{} is the best host we have ever had", self.host)
+    }
+
+    fn book(&mut self, name: &str, nights: u32) -> () {
+        self.guests.push((name.to_string(), nights));
+    }
+}
+fn main() {
+    let mut hotel = Hotel::new("The Lux");
+    println!("{}", hotel.get_description());
+    hotel.book("Johnny Rotten", 5);
+    println!("{:?}", hotel);
+
+    let mut airbnb = AirBnB::new("Peter");
+    println!("{}", airbnb.get_description());
+    airbnb.book("Tommy Tunes", 7);
+    println!("{:?}", airbnb);
+}
