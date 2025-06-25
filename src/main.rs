@@ -1,7 +1,8 @@
-/* Using a Trait to add constraints to a functions parameters. 
+/* Trait Bounds and Trait Bound Syntax
+A trait bound requires that a generic type implement a specific trait
 */
 
-use std::collections::HashMap;
+use std::{arch::x86_64::_MM_MASK_DIV_ZERO, collections::HashMap};
 
 trait Accommodation {
     fn get_description(&self) -> String;
@@ -62,21 +63,40 @@ impl Accommodation for AirBnB {
     }
 }
 
-/* We can make a function accept any Type that implements a given Trait. We don't declare the Type, rather
-we declare the specific Trait and the function knows the parameter will be of a Type that implements that Trait. The function will also be able to invoke any methods
-defined in the Trait, regardless of what parameter ends up being */
-fn book_for_one_night(entity: &mut impl Accommodation, guest: &str) {
+//Generic Types with Trait Bound Syntax -> <T: Trait Type>
+fn book_for_one_night<T: Accommodation>(entity: &mut T, guest: &str) {
     entity.book(guest, 1);
 }
 
+//This syntax allows us to use different types for each of the first and second parameters, as long as each Type implements the Trait
+fn mix_and_match(first: &mut impl Accommodation, second: &mut impl Accommodation, guest: &str) {
+    first.book(guest, 1);
+    second.book(guest, 2);
+}
+
+//This syntax demands that both parameter types, T, must be the same Type, we further constrain the parameter type to the same Type
+//This code won't compile, because you cannot borrow as mutable more than once
+//fn mix_and_match_2<T: Accommodation>(first: &mut T, second: &mut T, guest: &str) {
+   // first.book(guest, 1);
+   // second.book(guest, 2);
+//}
+
+//This syntax allows us to have the flexibility of the fist function, with the syntax of the second, by declaring different generics
+fn mix_and_match_3<T: Accommodation, U: Accommodation>(first: &mut T, second: &mut U, guest: &str) {
+    first.book(guest, 1);
+    second.book(guest, 2);
+}
 
 fn main() {
     let mut hotel = Hotel::new("The Lux");
-    book_for_one_night(&mut hotel, "Johnny");
-    println!("{:?}", hotel);
-
     let mut airbnb = AirBnB::new("Peter");
-    book_for_one_night(&mut airbnb, "Tommy");
-    println!("{:?}", airbnb);
-    
+   
+    mix_and_match(&mut hotel, &mut airbnb, "Penelope");
+    println!("{:?} {:?}", hotel, airbnb);
+
+  //  mix_and_match_2(&mut hotel, &mut hotel, "Ricardo"); //will not compile
+
+    mix_and_match_3(&mut hotel, &mut airbnb, "Consuelo");
+    println!("{:?} {:?}", hotel, airbnb);
+
 }
