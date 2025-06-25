@@ -1,19 +1,11 @@
-/* Creating an Accommodation Trait for Hotel Bookings
+/* Using a Trait to add constraints to a functions parameters. 
 */
 
 use std::collections::HashMap;
 
 trait Accommodation {
-    //We are defining which methods a Type MUST implement if they implement the Accommodation Trait
-    //Writing the code this way (not defining a code of block in the method) requires any Type that implements the Trait to define the code black when implemented
-    /* Another option is defining the body of the method in the Trait, so the Type implementing the trait would just use the generic.
-    Example, for get_description, we could write it as follows:
-        fn get_description(&self) -> String {
-          String::from("A wonderful place to stay")
-    } 
-    Then the Type implementing the Trait wouldn't have to implement the method and would just use the generic */
     fn get_description(&self) -> String;
-    fn book(&mut self, name: &str, nights: u32) -> (); // could also accomplish same with no return type instead of the empty tuple return type
+    fn book(&mut self, name: &str, nights: u32) -> ();
 }
 
 #[derive(Debug)]
@@ -29,22 +21,19 @@ impl Hotel {
             reservation: HashMap::new(),
         }
     }
-    //We can use methods from the defined Trait in other methods within other impl blocks. We cannot add methods to the Trait impl block however as the Trait has a 
-    //specific number of defined methods
+
     fn summarize(&self) -> String {
         format!("{}: {}", self.name, self.get_description())
     }
 }
 
 impl Accommodation for Hotel {
-    // this is how we implement the Accomodation Trait on Hotel struct. We must implement all Trait items as well
-    //Rust analyzer recognizes the parameters and return types we defined above and will automatically provide them when we code the Trait items
     fn get_description(&self) -> String {
-        format!("{} is the pinnacle of luxury", self.name) // reaching into the Hotel struct and pulling out the name field and returning it with format!
+        format!("{} is the pinnacle of luxury", self.name) 
     }
 
     fn book(&mut self, name: &str, nights: u32) -> () {
-        self.reservation.insert(name.to_string(), nights); //using insert() mutates the struct -> &mut self. insert() allows us to insert name and nights for k & v
+        self.reservation.insert(name.to_string(), nights); 
     }
 }
 
@@ -73,15 +62,21 @@ impl Accommodation for AirBnB {
     }
 }
 
+/* We can make a function accept any Type that implements a given Trait. We don't declare the Type, rather
+we declare the specific Trait and the function knows the parameter will be of a Type that implements that Trait. The function will also be able to invoke any methods
+defined in the Trait, regardless of what parameter ends up being */
+fn book_for_one_night(entity: &mut impl Accommodation, guest: &str) {
+    entity.book(guest, 1);
+}
+
+
 fn main() {
     let mut hotel = Hotel::new("The Lux");
-    println!("{}", hotel.get_description());
-    println!("{}", hotel.summarize());
-    hotel.book("Johnny Rotten", 5);
+    book_for_one_night(&mut hotel, "Johnny");
     println!("{:?}", hotel);
 
     let mut airbnb = AirBnB::new("Peter");
-    println!("{}", airbnb.get_description());
-    airbnb.book("Tommy Tunes", 7);
+    book_for_one_night(&mut airbnb, "Tommy");
     println!("{:?}", airbnb);
+    
 }
