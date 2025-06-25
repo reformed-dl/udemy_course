@@ -29,6 +29,11 @@ impl Hotel {
             reservation: HashMap::new(),
         }
     }
+    //We can use methods from the defined Trait in other methods within other impl blocks. We cannot add methods to the Trait impl block however as the Trait has a 
+    //specific number of defined methods
+    fn summarize(&self) -> String {
+        format!("{}: {}", self.name, self.get_description())
+    }
 }
 
 impl Accommodation for Hotel {
@@ -67,9 +72,11 @@ impl Accommodation for AirBnB {
         self.guests.push((name.to_string(), nights));
     }
 }
+
 fn main() {
     let mut hotel = Hotel::new("The Lux");
     println!("{}", hotel.get_description());
+    println!("{}", hotel.summarize());
     hotel.book("Johnny Rotten", 5);
     println!("{:?}", hotel);
 
