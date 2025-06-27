@@ -1,4 +1,5 @@
-/* Where Clauses - another syntax available when we want to bind generic types to implement one or more Traits
+/* Traits as Function Return Types
+    We can set the Return Type of a Function to be any Type that Implements a specific Trait or Traits
 */
 
 use std::collections::HashMap;
@@ -86,11 +87,18 @@ where
     second.book(guest, 2);
 }
 
+// Traits as a Function Return Type
+fn choose_best_place_to_stay() -> impl Accommodation + Description {
+    Hotel::new("The Luxe")
+    //Although the return type is any type that implements both of these traits, we can not have more than one type or we will get an error.
+}
+
 
 fn main() {
-    let mut hotel = Hotel::new("The Lux");
-    let mut airbnb = AirBnB::new("Peter");
-   
+    let mut hotel = choose_best_place_to_stay();// Analyzer identifies the type as any type that implements the Accommodation Trait, not Hotel Type
+    let mut airbnb = AirBnB::new("Peter");   
     mix_and_match(&mut hotel, &mut airbnb, "Penelope");
-    println!("{:?} {:?}", hotel, airbnb);
+    //initially mix_and_match would not compile b/c the parameter type requies a type that implements Accommodation and Description Traits, had to change return type
+    //of choose_best_place_to_stay to be a type that implements both Accommodation and Description in order to compile
+
 }
