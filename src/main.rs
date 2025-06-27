@@ -1,9 +1,8 @@
-/* Multiple Trait Bounds - Requiring multiple traits either for a parameter or bound to a generic
+/* Where Clauses - another syntax available when we want to bind generic types to implement one or more Traits
 */
 
 use std::collections::HashMap;
 
-//Splitting existing Accommodation Trait into 2 separate Traits, Accommodation and Description
 trait Accommodation {
     fn book(&mut self, name: &str, nights: u32) -> ();
 }
@@ -38,8 +37,8 @@ impl Accommodation for Hotel {
         self.reservation.insert(name.to_string(), nights); 
     }
 }
-// Must also define an implementation for the Description Trait
-impl Description for Hotel {} // leaving the code block empty to it falls back to what was defined in the trait implementation "A wondeful place to stay"
+
+impl Description for Hotel {} 
 
 #[derive(Debug)]
 struct AirBnB {
@@ -61,25 +60,30 @@ impl Accommodation for AirBnB {
         self.guests.push((name.to_string(), nights));
     }
 }
-// Must also define the implementation for Description Trait here for AirBnB
+
 impl Description for AirBnB {
     fn get_description(&self) -> String {
         format!("{} is the best host we have ever had", self.host)
     }
 }
 
-// Syntax for Multiple Traits with Generic Trait Bound Syntax, <T: Trait1 + Trait2>
-fn book_for_one_night<T: Accommodation + Description>(entity: &mut T, guest: &str) {
+
+fn book_for_one_night(entity: &mut (impl Accommodation + Description), guest: &str) {
     entity.book(guest, 1);
 }
 
-// syntax for Multiple Traits with parameters -> 'first parameter' must accepty a Type that implements both the Accommodation and Description Traits
-// (first_param: &mut (impl Trait1 + Trait2), second_param: type)
-fn mix_and_match(first: &mut (impl Accommodation + Description), second: &mut impl Accommodation, guest: &str) {
+// Showing both the Trait Bound Syntax and the Where Clause Syntax
+//Trait Bound:
+// fn mix_and_match<T: Accommodation + Description, U: Accommodation>(first: &mut T, second: &mut U, guest: &str) {code body}
+// Where Cluase accomplishes the same thing, but with a different syntax
+fn mix_and_match<T, U>(first: &mut T, second: &mut U, guest: &str)  
+where 
+    T: Accommodation + Description,
+    U: Accommodation
+{
     first.book(guest, 1);
     first.get_description();
     second.book(guest, 2);
-    //second.get_description(); this will not work because Rust cannot guarantee the the second parameter has a get_description method
 }
 
 
