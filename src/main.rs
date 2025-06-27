@@ -1,12 +1,17 @@
-/* Trait Bounds and Trait Bound Syntax
-A trait bound requires that a generic type implement a specific trait
+/* Multiple Trait Bounds - Requiring multiple traits either for a parameter or bound to a generic
 */
 
-use std::{arch::x86_64::_MM_MASK_DIV_ZERO, collections::HashMap};
+use std::collections::HashMap;
 
+//Splitting existing Accommodation Trait into 2 separate Traits, Accommodation and Description
 trait Accommodation {
-    fn get_description(&self) -> String;
     fn book(&mut self, name: &str, nights: u32) -> ();
+}
+
+trait Description {
+    fn get_description(&self) -> String {
+        String::from("A wonderful place to stay")
+    }
 }
 
 #[derive(Debug)]
@@ -29,14 +34,12 @@ impl Hotel {
 }
 
 impl Accommodation for Hotel {
-    fn get_description(&self) -> String {
-        format!("{} is the pinnacle of luxury", self.name) 
-    }
-
     fn book(&mut self, name: &str, nights: u32) -> () {
         self.reservation.insert(name.to_string(), nights); 
     }
 }
+// Must also define an implementation for the Description Trait
+impl Description for Hotel {} // leaving the code block empty to it falls back to what was defined in the trait implementation "A wondeful place to stay"
 
 #[derive(Debug)]
 struct AirBnB {
@@ -54,38 +57,31 @@ impl AirBnB {
 }
 
 impl Accommodation for AirBnB {
-    fn get_description(&self) -> String {
-        format!("{} is the best host we have ever had", self.host)
-    }
-
     fn book(&mut self, name: &str, nights: u32) -> () {
         self.guests.push((name.to_string(), nights));
     }
 }
+// Must also define the implementation for Description Trait here for AirBnB
+impl Description for AirBnB {
+    fn get_description(&self) -> String {
+        format!("{} is the best host we have ever had", self.host)
+    }
+}
 
-//Generic Types with Trait Bound Syntax -> <T: Trait Type>
-fn book_for_one_night<T: Accommodation>(entity: &mut T, guest: &str) {
+// Syntax for Multiple Traits with Generic Trait Bound Syntax, <T: Trait1 + Trait2>
+fn book_for_one_night<T: Accommodation + Description>(entity: &mut T, guest: &str) {
     entity.book(guest, 1);
 }
 
-//This syntax allows us to use different types for each of the first and second parameters, as long as each Type implements the Trait
-fn mix_and_match(first: &mut impl Accommodation, second: &mut impl Accommodation, guest: &str) {
+// syntax for Multiple Traits with parameters -> 'first parameter' must accepty a Type that implements both the Accommodation and Description Traits
+// (first_param: &mut (impl Trait1 + Trait2), second_param: type)
+fn mix_and_match(first: &mut (impl Accommodation + Description), second: &mut impl Accommodation, guest: &str) {
     first.book(guest, 1);
+    first.get_description();
     second.book(guest, 2);
+    //second.get_description(); this will not work because Rust cannot guarantee the the second parameter has a get_description method
 }
 
-//This syntax demands that both parameter types, T, must be the same Type, we further constrain the parameter type to the same Type
-//This code won't compile, because you cannot borrow as mutable more than once
-//fn mix_and_match_2<T: Accommodation>(first: &mut T, second: &mut T, guest: &str) {
-   // first.book(guest, 1);
-   // second.book(guest, 2);
-//}
-
-//This syntax allows us to have the flexibility of the fist function, with the syntax of the second, by declaring different generics
-fn mix_and_match_3<T: Accommodation, U: Accommodation>(first: &mut T, second: &mut U, guest: &str) {
-    first.book(guest, 1);
-    second.book(guest, 2);
-}
 
 fn main() {
     let mut hotel = Hotel::new("The Lux");
@@ -93,10 +89,4 @@ fn main() {
    
     mix_and_match(&mut hotel, &mut airbnb, "Penelope");
     println!("{:?} {:?}", hotel, airbnb);
-
-  //  mix_and_match_2(&mut hotel, &mut hotel, "Ricardo"); //will not compile
-
-    mix_and_match_3(&mut hotel, &mut airbnb, "Consuelo");
-    println!("{:?} {:?}", hotel, airbnb);
-
 }
