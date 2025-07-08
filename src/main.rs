@@ -1,10 +1,14 @@
-/* Trait Bounds to Conditionally Implement Methods
-    *Trait bounds are when we attach one or more Traits to a Generic. It enforces constraints on what that possible Type could be. Any Type must implement the 
-    given Traits. It introduces limitations/boundaries.
+/* A Preview of Trait Objects - an instance of a Type that implements a particular trait whose methods will be accessed at runtime using a feature caled dynamic dispatch
+
+    Dynamic Dispatch (dyn): refers to a process where a method will be determined and called at runtime, not compile time. Meaning, Rust will figure out the exact 
+    type and the exact method to call at runtime, as opposed to knowing the exact type and method beforehand, aka static dispatch. With static dispatch the compiler
+    knows the exact type and the exact methods that will be invoked on that type at compile time. Static is less flexible, but faster. Dynamic Dispatch will only work
+    with references, &.
+
 */
 
 use std::collections::HashMap;
-use std::fmt::Display; // must add this use import to add the trait bound for Display in the impl block below
+use std::fmt::Display;
 
 trait Accommodation {
     fn book(&mut self, name: &str, nights: u32) -> ();
@@ -16,19 +20,16 @@ trait Description {
     }
 }
 
-// Expanding Hotel Struct to accept a Generic Type T, once we make this change, all of the existing impl blocks will show an error as they expect a defined type.
 #[derive(Debug)]
 struct Hotel<T> {
     name: T,
     reservation: HashMap<String, u32>,
 }
-// In order to have this code work, we have to use a special syntax that lets Rust know that we want these methods to work on any generic T
-// We will also add the trait bound here, so that Rust knows whatever type T is, it must implement the Display Trait
-// We will split up these impl blocks so we have more flexibility on the different types we can use and not limit our constructor function
+
 impl<T> Hotel<T> {
-    fn new(name: T) -> Self {// we have to change the parameter type her from &str to the generic T to have the flexibility that we want
+    fn new(name: T) -> Self {
         Self {
-            name, // use shorthand syntax here to assign whatever is provided in the name parameter to the name field
+            name,
             reservation: HashMap::new(),
         }
     }
@@ -36,8 +37,7 @@ impl<T> Hotel<T> {
 
 impl<T: Display> Hotel<T> {
     fn summarize(&self) -> String {
-        format!("{}: {}", self.name, self.get_description()) // because T is a generic, Rust cannot guarantee that it will implement the display {} trait
-                                                            // We can solve this problem with an trait bound, an additional constraint on the generic type
+        format!("{}: {}", self.name, self.get_description())
     }
 }
 
@@ -96,13 +96,19 @@ fn choose_best_place_to_stay() -> impl Accommodation + Description {
 }
 
 fn main() {
-    let hotel1 = Hotel::new(String::from("The Luxe"));
-    println!("{}", hotel1.summarize()); // Can call this method because the generic T in this case implements the Display Trait
+    let mut hotel = Hotel::new(String::from("The Luxe"));
+    let mut airbnb = AirBnB::new("Peter");
 
-    let hotel2 = Hotel::new("The Golden Standard");
-    println!("{}", hotel2.summarize()); // String slice will also support the summarize method
+    // Not possible to assign both of these variables to a Vec because Rust will assume we have a consistent type informed by the very first element
+    // What we want to do is define the specific type of Vec, but use dyn syntax that will allow any type that implements the Description Trait to be included as valid
+    let stays: Vec<&dyn Description> = vec![&hotel, &airbnb];
+    println!("{}", stays[0].get_description()); // at runtime Rust determines the exact type and method that is being invoked
+    println!("{}", stays[1].get_description());
 
-    let hotel3 = Hotel::new(vec!["The Sweet Escape", " The Hills"]);
-    //println!("{}", hotel3.summarize()); // This will not compile because the type for T is a vec and does not implement the Display trait
-    println!("{:?}", hotel3);
+    let mut bookings: Vec<&mut dyn Accommodation> = vec![&mut hotel, &mut airbnb];
+    bookings[0].book("Paulie", 3);
+    bookings[1].book("Johnny", 4);
+    println!("{:?}", hotel);
+    println!("{:?}", airbnb);
+
 }
